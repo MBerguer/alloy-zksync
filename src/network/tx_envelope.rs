@@ -1,6 +1,6 @@
 use alloy::consensus::{Signed, Typed2718};
 use alloy::network::eip2718::{Decodable2718, Encodable2718};
-use alloy::rlp::{Encodable, Header};
+use alloy::rlp::{self, Decodable, Encodable, Header};
 use serde::{Deserialize, Serialize};
 
 use super::tx_type::TxType;
@@ -225,6 +225,12 @@ impl Encodable2718 for TxEnvelope {
                 tx.tx().encode_with_signature(tx.signature(), out);
             }
         }
+    }
+}
+
+impl Decodable for TxEnvelope {
+    fn decode(buf: &mut &[u8]) -> alloy::rlp::Result<Self> {
+        Ok(Self::network_decode(buf)?)
     }
 }
 
